@@ -60,6 +60,14 @@ String read_file(char *filename) {
     return file_data;
 }
 
+bool startswith_n(const char *s, const char *prefix, u64 n) {
+    return strncmp(s, prefix, n) == 0;
+}
+
+bool startswith(const char *s, const char *prefix) {
+    return startswith_n(s, prefix, strlen(prefix));
+}
+
 void parse_args(int argc, char **argv) {
     for (s64 i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "-o") == 0) {
@@ -135,6 +143,10 @@ void remove_comments(const String *in_code, String *out_code) {
     }
 }
 
+const char *directives[] = {
+    "include", "define", "undef", "if", "endif", "elsif", "else", "ifndef", "ifdef", "error", "pragma"
+};
+
 void do_directives(const String *in_code, String *out_code) {
     enum {
         FIRST = 0,
@@ -154,6 +166,11 @@ void do_directives(const String *in_code, String *out_code) {
                 break;
             }
             case DIRECTIVE: {
+                for (int j = 0; j < sizeof(directives) / sizeof(char *); ++j) {
+                    if (startswith(in_code->data + i, directives[j])) {
+                        
+                    }
+                } 
                 for (int j = 0; j < 7; ++j) {
                     if (tolower(String_at(in_code, i+j)) != "include"[j]) {
                         error(line, "koji kurac je ovaj include");
